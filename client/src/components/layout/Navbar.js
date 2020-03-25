@@ -1,11 +1,13 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { logoutUser } from "../../actions/authActions";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+
 class Navbar extends Component {
   onLogoutClick = e => {
     e.preventDefault();
-    console.log('Does Nothnig...')
-    // this.props.logoutUser();
+    this.props.logoutUser();
   };
   render() {
     const logoutStyle = {
@@ -18,17 +20,17 @@ class Navbar extends Component {
           <nav>
             <div className="nav-wrapper white">
               <Link
-                to="/"
+                to="/Dashboard"
                 style={{
                   fontFamily: "monospace"
                 }}
                 className="col s5 brand-logo center black-text"
               >
                 ADMIN
-            </Link>
-              <ul id="nav-mobile" class="right">
-                <li><a href="#" style={logoutStyle} onClick={this.onLogoutClick}>Logout</a></li>
-              </ul>
+              </Link>
+              {this.props.auth.isAuthenticated ? <ul id="nav-mobile" className="right">
+                <li><a href="#!" style={logoutStyle} onClick={this.onLogoutClick}>Logout</a></li>
+              </ul> : null}
             </div>
           </nav>
         </nav>
@@ -37,4 +39,16 @@ class Navbar extends Component {
   }
 }
 
-export default Navbar;
+Navbar.propTypes = {
+  logoutUser: PropTypes.func.isRequired,
+  auth: PropTypes.object.isRequired
+};
+
+const mapStateToProps = state => ({
+  auth: state.auth
+});
+
+export default connect(
+  mapStateToProps,
+  { logoutUser }
+)(Navbar);
